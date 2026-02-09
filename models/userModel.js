@@ -1,4 +1,5 @@
 const {Schema,model} = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const UserSchema = new Schema( {
    
@@ -41,6 +42,26 @@ const UserSchema = new Schema( {
  }
 
 )
+
+//password hash middleware
+
+UserSchema.pre("save", async function () {
+
+  // password change nahi hua → skip hashing
+  if (!this.isModified("password")) return;
+
+  // salt generate
+  const salt = await bcrypt.genSalt(10);
+
+  // hash password
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+
+UserSchema.methods.comparePassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
+
 
 const UserModel = model("User",UserSchema);
 module.exports = UserModel;
