@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const generateToken = require("../utils/generateToken");
 
 const loginUser = async(req,res) => {
     try{
@@ -47,7 +48,11 @@ const loginUser = async(req,res) => {
             })
         }
 
-        //Update Lat login Time
+       //  Generate JWT Token
+
+          const token = generateToken(user);
+
+        //Update Last login Time
 
         user.lastLoginAt = new Date();
         await user.save();
@@ -57,6 +62,7 @@ const loginUser = async(req,res) => {
         res.status(200).json({
             success : true,
             message : "Login successful",
+            token,
             user: {
                 id: user._id,
                 name: user.name,
@@ -67,11 +73,7 @@ const loginUser = async(req,res) => {
 
 
     }
-
     
-
-
-
     catch(error){
 
         //error handling
