@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const User = require("./models/userModel");
 
-mongoose.connect("mongodb+srv://choubeyvedprakash267_db_user:1XYuxN3qCUPoOumG@hospitalmanagementclust.dfphdtu.mongodb.net/hospital_db");
+mongoose.connect("mongodb+srv://choubeyvedprakash267_db_user:lCPyhEaMaUNtaY8L@hospitalmanagementclust.dfphdtu.mongodb.net/hospital_db");
 
 async function test() {
   const user = await User.create({
