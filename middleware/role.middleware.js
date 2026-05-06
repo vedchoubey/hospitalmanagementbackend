@@ -1,7 +1,7 @@
 const authorize = (...allowedRoles) => {
     return (req,res,next) => {
         try{
-            // check user exists
+            // check user exists(ensure auth middleware ran)
 
             if(!req.user){
                 return res.status(401).json({

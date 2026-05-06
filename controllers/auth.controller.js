@@ -1,3 +1,4 @@
+const ROLES = require("../constants/roles");
 const User = require("../models/userModel");
 const generateToken = require("../utils/generateToken");
 
@@ -95,11 +96,11 @@ const loginUser = async(req,res) => {
 
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
     // Validate input
 
-    if (!name || !email || !password || !role) {
+    if (!name || !email || !password ) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
@@ -119,13 +120,13 @@ const registerUser = async (req, res) => {
 
     
 
-    //  Create user
+    //  Create user as PATIENT only
 
     const user = await User.create({
       name,
       email,
       password,
-      role,
+      role: ROLES.PATIENT,
     });
 
     res.status(201).json({
