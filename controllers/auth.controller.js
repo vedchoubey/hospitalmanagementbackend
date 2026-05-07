@@ -1,5 +1,7 @@
+const ROLES = require("../constants/roles");
 const User = require("../models/userModel");
 const generateToken = require("../utils/generateToken");
+
 
 const loginUser = async(req,res) => {
     try{
@@ -21,6 +23,8 @@ const loginUser = async(req,res) => {
 
         const user = await User.findOne({email});
 
+        
+
         if(!user) {
             return res.status(404).json({
                 success: false,
@@ -40,6 +44,7 @@ const loginUser = async(req,res) => {
         //Compare Password
 
         const isMatch = await user.comparePassword(password);
+        
 
         if(!isMatch) {
             return res.status(401).json({
@@ -87,4 +92,55 @@ const loginUser = async(req,res) => {
     }
 };
 
-module.exports = { loginUser };
+// ------------------ REGISTER USER -----------------------
+
+const registerUser = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    // Validate input
+
+    if (!name || !email || !password ) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+
+    // Check existing user
+
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "User already exists",
+      });
+    }
+
+    
+
+    //  Create user as PATIENT only
+
+    const user = await User.create({
+      name,
+      email,
+      password,
+      role: ROLES.PATIENT,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully",
+      data: user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { loginUser, registerUser };
